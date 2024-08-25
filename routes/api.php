@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthorizationController;
 
@@ -10,4 +10,5 @@ Route::post('refresh', [AuthorizationController::class, 'refresh'])->name('refre
 Route::group(['middleware' => ['auth:api']], function () {
   Route::get('me', [AuthorizationController::class, 'me'])->name('me');
   Route::post('logout', [AuthorizationController::class, 'logout'])->name('logout');
+  Route::apiResource('user', UserController::class);
 });
