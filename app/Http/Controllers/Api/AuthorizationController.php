@@ -27,7 +27,7 @@ class AuthorizationController extends Controller {
     $response = json_decode($result->getContent(), true);
     $user['token'] = $response;
     return response()->json([
-      'success' => true,
+      'status' => true,
       'token' => $response,
     ]);
   }
