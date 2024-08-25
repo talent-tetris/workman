@@ -13,7 +13,7 @@ class UserController extends Controller {
   public function index() {
     return response()->json([
       'status' => true,
-      'users' => User::paginate(25),
+      'users' => User::all(),
     ]);
   }
 
@@ -21,7 +21,7 @@ class UserController extends Controller {
    * Display the specified resource.
    */
   public function show($username) {
-    $user = User::where('username', $username)->first();
+    $user = User::with('posts.images')->where('username', $username)->first();
     return response()->json([
       'status' => true,
       'user' => $user,

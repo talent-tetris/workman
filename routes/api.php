@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthorizationController;
 
@@ -11,4 +13,5 @@ Route::group(['middleware' => ['auth:api']], function () {
   Route::get('me', [AuthorizationController::class, 'me'])->name('me');
   Route::post('logout', [AuthorizationController::class, 'logout'])->name('logout');
   Route::apiResource('user', UserController::class);
+  Route::apiResource('posts', PostController::class);
 });
