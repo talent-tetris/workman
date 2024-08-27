@@ -12,5 +12,14 @@
 5. Run `php artisan migrate`
 6. Run `php artisan db:seed` to run seeders, if any. 
 7. Run `php artisan passport:keys`
-8. ```php artisan passport:client --password``` - создается два ключа. **_Client ID_** и **_Client secret_** - их необходимо скопировать и добавить в файл `.env` на ключи **PASSPORT_PASSWORD_CLIENT_ID** и **PASSPORT_PASSWORD_SECRET**
+8. `php artisan passport:client --password` - создается два ключа. **_Client ID_** и **_Client secret_** - их необходимо скопировать и добавить в файл `.env` на ключи **PASSPORT_PASSWORD_CLIENT_ID** и **PASSPORT_PASSWORD_SECRET**
 9. Run `php artisan serve`
+
+## ErrorException failed to open stream: Permission denied
+* Run `php artisan cache:clear`
+* Run `chmod -R 777 storage/`
+* Run `composer dump-autoload`
+
+## SQLSTATE[HY000]: General error: 8 attempt to write a readonly database
+* Run `chmod 0777 ./database/database.sqlite`
+* Run `chmod 0777 ./database/`
