@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthorizationController;
 

@@ -10,8 +10,8 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('images', function (Blueprint $table) {
-      $table->id();
-      $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
+      $table->uuid('id')->primary();
+      $table->foreignId('post_id')->references('id')->on('posts')->cascadeOnDelete();
       $table->string('path');
       $table->string('caption')->nullable();
       $table->timestamps();

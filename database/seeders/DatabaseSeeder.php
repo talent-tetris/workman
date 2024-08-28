@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Image;
+use App\Models\Post;
 use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,16 +15,17 @@ class DatabaseSeeder extends Seeder {
    * Seed the application's database.
    */
   public function run(): void {
-    User::factory(5)
-      ->hasPosts(rand(2, 4))
-      ->create()
-      ->each(function ($user) {
-        $user->posts->each(function ($post) {
-          $images = Image::factory(rand(1, 5))->make();
-          $post->images()->saveMany($images);
-        });
-      });
-//    User::factory(10)->create();
+    $users = User::factory(24)->create();
+    foreach ($users as $user) {
+      $posts = Post::factory(rand(0, 4))->create([
+        'user_id' => $user['id']
+      ]);
+      foreach ($posts as $post) {
+        Image::factory(rand(0, 5))->create([
+          'post_id' => $post['id']
+        ]);
+      }
+    }
 
     User::factory()->create([
       'name' => 'Test User',
