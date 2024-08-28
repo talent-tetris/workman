@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\StorePostBlogRequest;
+use App\Models\File;
+use App\Models\Media;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController {
   /**
@@ -15,6 +19,13 @@ class PostController {
       ->with('images')
       ->orderBy('created_at', 'DESC')
       ->paginate($perPage);
+//    foreach ($posts as $post) {
+//      foreach ($post['images'] as $image) {
+//
+//        $url = Storage::url("posts/{$post->id}/{$image->file_name}");
+//        dd($url);
+//      }
+//    }
     return response()->json([
       'status' => true,
       'posts' => $posts,
@@ -22,17 +33,41 @@ class PostController {
   }
 
   /**
-   * Show the form for creating a new resource.
-   */
-  public function create() {
-    //
-  }
-
-  /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request) {
-    //
+  public function store(StorePostBlogRequest $request) {
+    $body_text = $request->body;
+    $post = Post::query()->create(attributes: [
+      'body' => $body_text ?? '',
+      'user_id' => auth()->user()->id
+    ]);
+    if ($request->hasFile('files')) {
+      foreach ($request->file('files') as $file) {
+        $name = $file->hashName();
+        Storage::disk('public')->put("posts/{$post->id}", $file);
+
+        $content_type = $file->getClientMimeType();
+        $image_size = [];
+        if (str_contains($content_type, 'image/')) {
+          $ar_image_size = getimagesize($file);
+          $image_size['width'] = $ar_image_size[0];
+          $image_size['height'] = $ar_image_size[1];
+        }
+        File::create([
+          ...$image_size,
+          'post_id' => $post->id,
+          'file_name' => "{$name}",
+          'original_name' => $file->getClientOriginalName(),
+          'content_type' => $content_type,
+          'file_path' => "posts/{$post->id}",
+          'collection' => 'posts',
+          'file_size' => $file->getSize(),
+        ]);
+      }
+    }
+    return response()->json([
+      'status' => true,
+    ]);
   }
 
   /**

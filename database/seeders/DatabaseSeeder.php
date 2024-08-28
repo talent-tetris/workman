@@ -20,11 +20,6 @@ class DatabaseSeeder extends Seeder {
       $posts = Post::factory(rand(0, 4))->create([
         'user_id' => $user['id']
       ]);
-      foreach ($posts as $post) {
-        Image::factory(rand(0, 5))->create([
-          'post_id' => $post['id']
-        ]);
-      }
     }
 
     User::factory()->create([

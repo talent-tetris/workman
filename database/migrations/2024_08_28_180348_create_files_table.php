@@ -9,11 +9,23 @@ return new class extends Migration {
    * Run the migrations.
    */
   public function up(): void {
-    Schema::create('images', function (Blueprint $table) {
+    Schema::create('files', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->foreignId('post_id')->references('id')->on('posts')->cascadeOnDelete();
-      $table->string('path');
-      $table->string('caption')->nullable();
+
+      $table->string('collection');
+
+      $table->integer('height')->default(0);
+      $table->integer('width')->default(0);
+
+      $table->string('file_path');
+      $table->string('content_type');
+      $table->string('file_name');
+      $table->string('original_name');
+      $table->string('description')->nullable();
+
+      $table->unsignedBigInteger('file_size')->default(0);
+
       $table->timestamps();
     });
   }
@@ -22,6 +34,6 @@ return new class extends Migration {
    * Reverse the migrations.
    */
   public function down(): void {
-    Schema::dropIfExists('post_images');
+    Schema::dropIfExists('files');
   }
 };
