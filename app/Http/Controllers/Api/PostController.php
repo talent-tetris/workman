@@ -41,32 +41,36 @@ class PostController {
       'body' => $body_text ?? '',
       'user_id' => auth()->user()->id
     ]);
-    if ($request->hasFile('files')) {
-      foreach ($request->file('files') as $file) {
-        $name = $file->hashName();
-        Storage::disk('public')->put("posts/{$post->id}", $file);
 
-        $content_type = $file->getClientMimeType();
-        $image_size = [];
-        if (str_contains($content_type, 'image/')) {
-          $ar_image_size = getimagesize($file);
-          $image_size['width'] = $ar_image_size[0];
-          $image_size['height'] = $ar_image_size[1];
-        }
-        File::create([
-          ...$image_size,
-          'post_id' => $post->id,
-          'file_name' => "{$name}",
-          'original_name' => $file->getClientOriginalName(),
-          'content_type' => $content_type,
-          'file_path' => "posts/{$post->id}",
-          'collection' => 'posts',
-          'file_size' => $file->getSize(),
-        ]);
-      }
-    }
+//    if ($request->hasFile('files')) {
+//      foreach ($request->file('files') as $file) {
+//        $name = $file->hashName();
+//        Storage::disk('public')->put("posts/{$post->id}", $file);
+//
+//        $content_type = $file->getClientMimeType();
+//        $image_size = [];
+//        if (str_contains($content_type, 'image/')) {
+//          $ar_image_size = getimagesize($file);
+//          $image_size['width'] = $ar_image_size[0];
+//          $image_size['height'] = $ar_image_size[1];
+//        }
+//        File::create([
+//          ...$image_size,
+//          'post_id' => $post->id,
+//          'file_name' => "{$name}",
+//          'original_name' => $file->getClientOriginalName(),
+//          'content_type' => $content_type,
+//          'file_path' => "posts/{$post->id}",
+//          'collection' => 'posts',
+//          'file_size' => $file->getSize(),
+//        ]);
+//      }
+//    }
     return response()->json([
       'status' => true,
+      '$request'=>$request,
+      '$request->body'=>$request->body,
+      'hasFile'=>$request->hasFile('files')
     ]);
   }
 
