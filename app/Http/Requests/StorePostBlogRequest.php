@@ -20,8 +20,8 @@ class StorePostBlogRequest extends FormRequest {
    */
   public function rules(): array {
     return [
-      'files.*' => ['nullable', 'string', 'regex:/^avatars\/[a-z0-9]{26}\.([a-z]++)$/i'],
-//      'files.*' => [File::types(['png', 'jpg', 'gif'])->max(10 * 1024)]
+//      'files.*' => ['nullable', 'string', 'regex:/^avatars\/[a-z0-9]{26}\.([a-z]++)$/i'],
+      'images.*' => [File::types(['png', 'jpg', 'gif'])->max(10 * 1024)]
     ];
   }
 }
