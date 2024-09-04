@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -13,5 +14,6 @@ Route::group(['middleware' => ['auth:api']], function () {
   Route::post('logout', [AuthorizationController::class, 'logout'])->name('logout');
   Route::apiResource('user', UserController::class);
   Route::apiResource('posts', PostController::class);
+  Route::post('account/password', [AccountController::class, 'password'])->name('account.password');
 });
 
