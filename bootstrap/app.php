@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
       ])
       ->api(prepend: [
         JsonResponse::class,
-        Localization::class
+        Localization::class,
       ]);
   })
   ->withExceptions(function (Exceptions $exceptions) {
