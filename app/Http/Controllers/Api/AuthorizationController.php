@@ -14,21 +14,14 @@ class AuthorizationController extends Controller {
   public function login(AuthorizationRequest $request): JsonResponse {
     $user = User::where('username', $request->username)->first();
     $request->authenticate($user);
-    $user = Auth::user();
-    $request = Request::create('oauth/token', 'POST', [
-      'grant_type' => 'password',
-      'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
-      'client_secret' => env('PASSPORT_PASSWORD_SECRET'),
-      'username' => $request->username,
-      'password' => $request->password,
-      'scope' => '',
-    ]);
-    $result = app()->handle($request);
-    $response = json_decode($result->getContent(), true);
-    $user['token'] = $response;
+    $token = $user->createDeviceToken(
+      device: $request->deviceName(),
+      ip: $request->ip(),
+      remember: $request->input('remember', false)
+    );
     return response()->json([
       'status' => true,
-      'token' => $response,
+      'token' => $token,
     ]);
   }
 
@@ -43,24 +36,8 @@ class AuthorizationController extends Controller {
     ]);
   }
 
-  public function refresh(RefreshTokenRequest $request): JsonResponse {
-    $request = Request::create('oauth/token', 'POST', [
-      'grant_type' => 'refresh_token',
-      'refresh_token' => $request->refresh_token,
-      'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
-      'client_secret' => env('PASSPORT_PASSWORD_SECRET'),
-      'scope' => '',
-    ]);
-    $result = app()->handle($request);
-    $response = json_decode($result->getContent(), true);
-    return response()->json([
-      'success' => true,
-      'token' => $response,
-    ]);
-  }
-
   public function logout(): JsonResponse {
-    Auth::user()->tokens()->delete();
+    Auth::user()->currentAccessToken()->delete();
     return response()->json([
       'status' => true,
     ]);

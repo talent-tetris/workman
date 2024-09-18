@@ -44,7 +44,7 @@ class AuthorizationRequest extends FormRequest {
         'username' => __('auth.failed'),
       ]);
     }
-    if (!Auth::attempt(['username' => $this->username, 'password' => $this->password])) {
+    if (!Hash::check($this->password, $user->password)) {
       RateLimiter::hit($this->throttleKey());
       throw ValidationException::withMessages([
         'password' => __('auth.password'),

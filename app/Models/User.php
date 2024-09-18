@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class User extends Authenticatable {
   use HasApiTokens, HasFactory, Notifiable, HasUuids;
@@ -47,12 +48,21 @@ class User extends Authenticatable {
     ];
   }
 
+  public function createDeviceToken(string $device, string $ip, bool $remember = false): string {
+    $sanctumToken = $this->createToken(
+      $device,
+      ['*'],
+      $remember ? now()->addMonth() : now()->addDay()
+    );
+
+    $sanctumToken->accessToken->ip = $ip;
+    $sanctumToken->accessToken->save();
+
+    return $sanctumToken->plainTextToken;
+  }
+
   public function posts() {
     return $this->hasMany(Post::class)
       ->orderByDesc('created_at');
-  }
-
-  public function findForPassport($username) {
-    return self::where('username', $username)->first(); // change column name whatever you use in credentials
   }
 }
